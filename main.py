@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import openai
-
 import os
+
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = FastAPI()
@@ -28,12 +28,10 @@ class UserMessage(BaseModel):
 
 def detect_emotion(text: str):
     completion = openai.chat.completions.create(
-        model="gpt-4.1-mini",
+        model="gpt-4o-mini",
         messages=[
-            {
-                "role": "system",
-                "content": "Classify the user's emotion in ONE word. Options: sadness, joy, anger, fear, neutral, stress, overwhelm, loneliness."
-            },
+            {"role": "system", "content": 
+             "Classify the user's emotion in ONE word. Options: sadness, joy, anger, fear, neutral, stress, overwhelm, loneliness."},
             {"role": "user", "content": text}
         ]
     )
@@ -73,12 +71,13 @@ def chat(payload: UserMessage):
         }
 
     emotion = detect_emotion(user_message)
-
     prompt = create_prompt(user_message, emotion, history)
 
     completion = openai.chat.completions.create(
-        model="gpt-4.1-mini",
-        messages=[{"role": "system", "content": prompt}],
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": prompt}
+        ],
         max_tokens=200
     )
 
@@ -88,4 +87,3 @@ def chat(payload: UserMessage):
         "emotion": emotion,
         "reply": reply
     }
-
