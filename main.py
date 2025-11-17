@@ -3,7 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import openai
 
-openai.api_key = "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"
+import os
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = FastAPI()
 
@@ -87,3 +88,4 @@ def chat(payload: UserMessage):
         "emotion": emotion,
         "reply": reply
     }
+
